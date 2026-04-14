@@ -1,22 +1,46 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Globe, ArrowLeft, Mail, Lock } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = (e) => {
+  // Проверка статуса при загрузке
+  useEffect(() => {
+    // 1. Проверяем, залогинен ли пользователь
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn === 'true') {
+      navigate('/dashboard');
+    }
+
+    // 2. Проверяем сохраненный email
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, [navigate]);
+
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Проверка данных
     if (email === 'test@gmail.com' && password === '1234') {
-      // Сохраняем в localStorage
+      // Сохраняем статус входа
       localStorage.setItem('isLoggedIn', 'true');
+
+      // Логика "Запомнить меня"
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', email);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+      }
+
       // Перенаправляем на dashboard
       navigate('/dashboard');
     } else {
@@ -41,12 +65,6 @@ export default function LoginPage() {
         <h2 className="mt-6 sm:mt-8 text-center text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
           С возвращением
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-500">
-          Или{' '}
-          <a href="#" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
-            создайте новый аккаунт
-          </a>
-        </p>
       </div>
 
       <motion.div 
@@ -113,17 +131,19 @@ export default function LoginPage() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-md"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-md cursor-pointer"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-xs sm:text-sm text-slate-600">
+                <label htmlFor="remember-me" className="ml-2 block text-xs sm:text-sm text-slate-600 cursor-pointer">
                   Запомнить меня
                 </label>
               </div>
 
               <div className="text-xs sm:text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
+                <Link to="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
                   Забыли пароль?
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -139,26 +159,6 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
-
-          <div className="mt-6 sm:mt-8">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-100" />
-              </div>
-              <div className="relative flex justify-center text-xs sm:text-sm">
-                <span className="px-2 bg-white text-slate-400">Или продолжить через</span>
-              </div>
-            </div>
-
-            <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-2 sm:gap-3">
-              <button className="w-full inline-flex justify-center items-center py-2.5 sm:py-3 px-2 sm:px-4 rounded-xl sm:rounded-2xl border border-slate-200 bg-white text-xs sm:text-sm font-medium text-slate-500 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">
-                Google
-              </button>
-              <button className="w-full inline-flex justify-center items-center py-2.5 sm:py-3 px-2 sm:px-4 rounded-xl sm:rounded-2xl border border-slate-200 bg-white text-xs sm:text-sm font-medium text-slate-500 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">
-                Microsoft
-              </button>
-            </div>
-          </div>
         </div>
       </motion.div>
 
