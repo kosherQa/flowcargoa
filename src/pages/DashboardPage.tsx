@@ -529,9 +529,17 @@ export default function DashboardPage() {
     setNewRequestForm({ customerName: '', contact: '', cargoType: 'Одежда и обувь' });
   };
 
-  // Удаление заявки
-  const deleteRequest = (requestId) => {
-    if (window.confirm('Вы уверены, что хотите удалить эту заявку?')) {
+  // Функция удаления заявки (ИСПРАВЛЕНА)
+  const handleDeleteRequest = (requestId) => {
+    // Находим заявку для удаления
+    const requestToDelete = requests.find(req => req.id === requestId);
+    
+    if (!requestToDelete) {
+      console.error('Заявка не найдена');
+      return;
+    }
+    
+    if (window.confirm(`Удалить заявку от "${requestToDelete.name}"?`)) {
       const updatedRequests = requests.filter(req => req.id !== requestId);
       setRequests(updatedRequests);
       localStorage.setItem('flowcargo_requests', JSON.stringify(updatedRequests));
@@ -613,10 +621,11 @@ export default function DashboardPage() {
                 <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm text-slate-600">{request.date}</td>
                 <td className="px-3 sm:px-6 py-3 sm:py-4">
                   <button
-                    onClick={() => deleteRequest(request.id)}
-                    className="text-red-500 hover:text-red-700 transition-colors p-1"
+                    onClick={() => handleDeleteRequest(request.id)}
+                    className="inline-flex items-center gap-1 px-2 py-1 text-red-600 hover:bg-red-50 rounded-lg transition-all text-sm"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} />
+                    Удалить
                   </button>
                 </td>
               </tr>
@@ -652,8 +661,8 @@ export default function DashboardPage() {
               <div className="text-sm font-semibold text-slate-900">{request.name}</div>
             </div>
             <button
-              onClick={() => deleteRequest(request.id)}
-              className="text-red-500 hover:text-red-700 p-1"
+              onClick={() => handleDeleteRequest(request.id)}
+              className="text-red-500 hover:text-red-700 p-2 -mt-1 -mr-1"
             >
               <Trash2 size={18} />
             </button>
@@ -662,7 +671,10 @@ export default function DashboardPage() {
           <div className="space-y-2 pt-2 border-t border-slate-100">
             <div>
               <div className="text-xs text-slate-500 mb-1">Контакт</div>
-              <div className="text-sm text-slate-600 break-all">{request.contact}</div>
+              <div className="text-sm text-slate-600 break-all flex items-center gap-1">
+                {request.contact.includes('@') ? <Mail size={14} /> : <Phone size={14} />}
+                {request.contact}
+              </div>
             </div>
             <div>
               <div className="text-xs text-slate-500 mb-1">Тип груза</div>
@@ -819,7 +831,7 @@ export default function DashboardPage() {
     </div>
   );
 
-  // Компонент таблицы пользователей (десктоп) с кнопкой добавления
+  // Комponent таблицы пользователей (десктоп) с кнопкой добавления
   const UsersTableDesktop = () => (
     <div className="hidden md:block bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
       <div className="px-3 sm:px-6 py-3 sm:py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
