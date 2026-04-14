@@ -79,7 +79,7 @@ function HomePage({ toggleMenu, isMenuOpen, navLinks, isAuth }: { toggleMenu: ()
     <div className="min-h-screen bg-white font-sans text-slate-900">
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-center gap-2 min-h-14 sm:min-h-16 md:min-h-20">
+          <div className="flex justify-between items-center h-14 sm:h-16 md:h-20">
             <Link to="/" className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
               <div className="w-7 h-7 sm:w-8 md:w-10 md:h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white">
                 <Globe size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6" />
@@ -102,23 +102,21 @@ function HomePage({ toggleMenu, isMenuOpen, navLinks, isAuth }: { toggleMenu: ()
               ))}
             </nav>
 
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-2">
               <Link 
                 to={isAuth ? "/dashboard" : "/login"}
-                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-full transition-all whitespace-nowrap"
+                className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-full transition-all whitespace-nowrap"
               >
-                {isAuth ? <LayoutDashboard size={14} className="sm:w-4 sm:h-4" /> : <LogIn size={14} className="sm:w-4 sm:h-4" />}
-                <span className="hidden xs:inline">
-                  {isAuth ? "В админку" : "Личный кабинет"}
-                </span>
+                {isAuth ? <LayoutDashboard size={16} /> : <LogIn size={16} />}
+                <span>{isAuth ? "В админку" : "Личный кабинет"}</span>
               </Link>
 
               <button
                 onClick={toggleMenu}
-                className="md:hidden p-1.5 sm:p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                 aria-label="Меню"
               >
-                {isMenuOpen ? <X size={20} className="sm:w-6 sm:h-6" /> : <Menu size={20} className="sm:w-6 sm:h-6" />}
+                <Menu size={22} />
               </button>
             </div>
           </div>
@@ -140,7 +138,7 @@ function HomePage({ toggleMenu, isMenuOpen, navLinks, isAuth }: { toggleMenu: ()
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-xs bg-white shadow-2xl md:hidden"
+              className="fixed top-0 right-0 bottom-0 z-50 w-64 bg-white shadow-2xl md:hidden"
             >
               <div className="flex flex-col h-full p-5">
                 <div className="flex justify-between items-center mb-6">
